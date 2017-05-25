@@ -1,0 +1,163 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <style>
+            .ui-icon-1{
+                background-image: url("#{resource['images/objeto1.jpg']}") !important;
+                top : 0% !important;
+                left : 0% !important;
+                width: 64px;
+                height: 64px;
+
+            }
+            .ui-icon-2{
+                background-image: url("#{resource['images/objeto2.jpg']}") !important;
+                top : 0% !important;
+                left : 0% !important;
+                width: 64px;
+                height: 64px;
+
+            }
+            .ui-icon-3{
+                background-image: url("#{resource['images/objeto3.jpg']}") !important;
+                top : 0% !important;
+                left : 0% !important;
+                width: 64px;
+                height: 64px;
+
+            }
+            .ui-icon-4{
+                background-image: url("#{resource['images/objeto4.jpg']}") !important;
+                top : 0% !important;
+                left : 0% !important;
+                width: 64px;
+                height: 64px;
+
+            }
+            .ui-icon-5{
+                background-image: url("#{resource['images/objeto5.jpg']}") !important;
+                top : 0% !important;
+                left : 0% !important;
+                width: 64px;
+                height: 64px;
+
+            }
+            .ui-icon-6{
+                background-image: url("#{resource['images/objeto6.jpg']}") !important;
+                top : 0% !important;
+                left : 0% !important;
+                width: 64px;
+                height: 64px;
+
+            }
+            .ui-icon-7{
+                background-image: url("#{resource['images/objeto7.jpg']}") !important;
+                top : 0% !important;
+                left : 0% !important;
+                width: 64px;
+                height: 64px;
+
+            }
+            .ui-icon-8{
+                background-image: url("#{resource['images/objeto8.jpg']}") !important;
+                top : 0% !important;
+                left : 0% !important;
+                width: 64px;
+                height: 64px;
+
+            }
+        </style>
+        <script>
+
+            function getMousePos(canvas, evt) {
+                var rect = canvas.getBoundingClientRect();
+                return {
+                    x: evt.clientX - rect.left,
+                    y: evt.clientY - rect.top
+                };
+            }
+            function click() {
+                canvas = document.getElementById("myCanvas");
+                canvas.addEventListener("click",
+                        function (e) {
+                            var mousePos = getMousePos(canvas, e);
+                            document.getElementById("formulario:hiddenX").value = mousePos.x;
+                            document.getElementById("formulario:hiddenY").value = mousePos.y;
+                            dibujar();
+                        }
+                , false);
+            }
+
+            function paint(image, varX, varY, varX1, varY1) {
+                canvas = document.getElementById("myCanvas");
+                var context = canvas.getContext('2d');
+                if (image != 'linea') {
+                    var imageObj = new Image();
+                    imageObj.onload = function () {
+                        context.drawImage(imageObj, varX, varY);
+                    };
+                    imageObj.src = '#{request.contextPath}/resources/images/' + image;
+                } else {
+                    paintLine(varX, varY, varX1, varY1);
+                }
+            }
+            function paintLine(varX, varY, varX1, varY1) {
+                canvas = document.getElementById("myCanvas");
+                var ctx = canvas.getContext("2d");
+                ctx.moveTo(varX, varY);
+                ctx.lineTo(varX1, varY1);
+                ctx.strokeStyle = '#ffffff';
+                ctx.stroke();
+            }
+            function repaintCanvas() {
+                canvas = document.getElementById("myCanvas");
+                var context = canvas.getContext('2d');
+                context.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        </script>
+        <title>Simulador Circuitos</title>
+    </h:head>
+    <h:body onload="click();">
+        <h:form id="formulario">
+            <p:remoteCommand name="dibujar"  actionListener="#{modelo.dibujaComponente}" />
+            <b:navBar brand="Simulador" brandHref="#" inverse="true">
+               
+            </b:navBar>
+            <center>
+
+                <p:outputLabel  value="#{modelo.titulo}"/>
+                <p:panelGrid columns="1">
+                    <p:column>
+                        <p:panelGrid columns="10" style="background-color: black">
+                            <p:commandButton icon="ui-icon-1" actionListener="#{modelo.seleccionaComponente('objeto1')}"/>
+                            <p:commandButton icon="ui-icon-2" actionListener="#{modelo.seleccionaComponente('objeto2')}"/>
+                            <p:commandButton icon="ui-icon-3" actionListener="#{modelo.seleccionaComponente('objeto3')}"/>
+                            <p:commandButton icon="ui-icon-4" actionListener="#{modelo.seleccionaComponente('objeto4')}"/>
+                            <p:commandButton icon="ui-icon-5" actionListener="#{modelo.seleccionaComponente('objeto5')}"/>
+                            <p:commandButton icon="ui-icon-6" actionListener="#{modelo.seleccionaComponente('objeto6')}"/>
+                            <p:commandButton icon="ui-icon-7" actionListener="#{modelo.seleccionaComponente('objeto7')}"/>
+                            <p:commandButton value="SIMULAR" actionListener="#{modelo.validaFormaCircuito}"/>
+                            <p:commandButton value="DESHACER" actionListener="#{modelo.deshacer}"/>
+                            <p:commandButton value="NUEVO" actionListener="#{modelo.nuevoLienzo()}"/>
+                        </p:panelGrid>    
+                    </p:column>
+                    <p:column>
+                        <canvas id="myCanvas" width="800"  height="600" style="border:1px solid #000000;background-color: black">
+                        </canvas>
+                    </p:column>
+                    <p:column>
+                        <p:messages id="messages"  showDetail="true" autoUpdate="true" closable="true" /> 
+                    </p:column>
+                </p:panelGrid>
+            </center>
+            <h:inputHidden value="#{modelo.valorX}" id="hiddenX" />
+            <h:inputHidden value="#{modelo.valorY}" id="hiddenY" />
+        </h:form>
+    </h:body>
+</html>
+
