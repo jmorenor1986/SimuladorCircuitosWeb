@@ -46,7 +46,7 @@ public class Modelo implements Runnable {
 
     @PostConstruct
     public void init() {
-        titulo = "TITUlo";
+        titulo = "";
         if (guardaObjetos == null) {
             guardaObjetos = new ArrayList<>();
         }
@@ -114,7 +114,7 @@ public class Modelo implements Runnable {
     public boolean validaComponente(int posicionX, int posicionY) {
         boolean validador;
         validador = fachada.validarPosicionComponente(guardaObjetos, posicionX, posicionY, objeto.getTipo(), cantidad);
-        muestraMensaje("Error", FachadaCompuertas.text);
+        muestraMensaje("Info", FachadaCompuertas.text);
         if (validador) {
         } else {
             try {
